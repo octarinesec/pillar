@@ -64,9 +64,9 @@ object PillarBuild extends Build {
     assemblyTestSetting,
     libraryDependencies := dependencies,
     name := "pillar",
-    organization := "com.chrisomeara",
+    organization := "de.kaufhof",
     version := "2.1.0",
-    homepage := Some(url("https://github.com/comeara/pillar")),
+    homepage := Some(url("https://github.com/Galeria-Kaufhof/pillar")),
     licenses := Seq("MIT license" -> url("http://www.opensource.org/licenses/mit-license.php")),
     scalaVersion := "2.10.4",
     crossScalaVersions := Seq("2.10.4", "2.11.1"),
@@ -84,14 +84,19 @@ object PillarBuild extends Build {
     pomIncludeRepository := { _ => false },
     pomExtra := (
       <scm>
-        <url>git@github.com:comeara/pillar.git</url>
-        <connection>scm:git:git@github.com:comeara/pillar.git</connection>
+        <url>git@github.com:Galeria-Kaufhof/pillar.git</url>
+        <connection>scm:git:git@github.com:Galeria-Kaufhof/pillar.git</connection>
       </scm>
       <developers>
         <developer>
           <id>comeara</id>
           <name>Chris O'Meara</name>
           <url>https://github.com/comeara</url>
+        </developer>
+        <developer>
+          <id>marcopriebe</id>
+          <name>MarcoPriebe</name>
+          <url>https://github.com/MarcoPriebe</url>
         </developer>
       </developers>
     )
