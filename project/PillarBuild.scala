@@ -68,8 +68,8 @@ object PillarBuild extends Build {
     version := "2.1.0",
     homepage := Some(url("https://github.com/Galeria-Kaufhof/pillar")),
     licenses := Seq("MIT license" -> url("http://www.opensource.org/licenses/mit-license.php")),
-    scalaVersion := "2.10.4",
-    crossScalaVersions := Seq("2.10.4", "2.11.1"),
+    scalaVersion := "2.11.6",
+    crossScalaVersions := Seq("2.10.4", "2.11.6"),
     rhPackageTask
   ).settings(
     publishTo := {
