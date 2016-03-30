@@ -38,15 +38,15 @@ The RPM installs Pillar to /opt/pillar.
 
 ### Packages
 
-Pillar is available at Maven Central under the GroupId com.chrisomeara and ArtifactId pillar_2.10 or pillar_2.11. The current version is 2.1.0.
+Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.10 or pillar_2.11. The current version is 2.1.1.
 
 #### sbt
 
-  libraryDependencies += "com.chrisomeara" % "pillar_2.10" % "2.1.0"
+  libraryDependencies += "de.kaufhof" % "pillar_2.10" % "2.1.1"
 
 #### Gradle
 
-  compile 'com.chrisomeara:pillar_2.10:2.1.0'
+  compile 'de.kaufhof:pillar_2.10:2.1.1'
 
 ## Usage
 
@@ -219,3 +219,8 @@ Reference the acceptance spec suite for details.
 ### 2.1.0
 
 * Update to Cassandra dependency to version 3.0.0 (MarcoPriebe)
+
+### 2.1.1
+
+* Update to sbt-sonatype dependency to version 1.1 (MarcoPriebe)
+* Update to Scala to version 2.11.6 (MarcoPriebe)
