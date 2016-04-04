@@ -38,15 +38,15 @@ The RPM installs Pillar to /opt/pillar.
 
 ### Packages
 
-Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.10 or pillar_2.11. The current version is 2.1.1.
+Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.10 or pillar_2.11. The current version is 3.0.0.
 
 #### sbt
 
-  libraryDependencies += "de.kaufhof" % "pillar_2.10" % "2.1.1"
+  libraryDependencies += "de.kaufhof" % "pillar_2.10" % "3.0.0"
 
 #### Gradle
 
-  compile 'de.kaufhof:pillar_2.10:2.1.1'
+  compile 'de.kaufhof:pillar_2.10:3.0.0'
 
 ## Usage
 
@@ -224,3 +224,7 @@ Reference the acceptance spec suite for details.
 
 * Update to sbt-sonatype dependency to version 1.1 (MarcoPriebe)
 * Update to Scala to version 2.11.6 (MarcoPriebe)
+
+### 3.0.0
+
+* change package structure to de.kaufhof (MarcoPriebe)

@@ -65,7 +65,7 @@ object PillarBuild extends Build {
     libraryDependencies := dependencies,
     name := "pillar",
     organization := "de.kaufhof",
-    version := "2.1.1",
+    version := "3.0.0",
     homepage := Some(url("https://github.com/Galeria-Kaufhof/pillar")),
     licenses := Seq("MIT license" -> url("http://www.opensource.org/licenses/mit-license.php")),
     scalaVersion := "2.11.6",
@@ -88,11 +88,6 @@ object PillarBuild extends Build {
         <connection>scm:git:git@github.com:Galeria-Kaufhof/pillar.git</connection>
       </scm>
       <developers>
-        <developer>
-          <id>comeara</id>
-          <name>Chris O'Meara</name>
-          <url>https://github.com/comeara</url>
-        </developer>
         <developer>
           <id>marcopriebe</id>
           <name>MarcoPriebe</name>
