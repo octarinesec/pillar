@@ -27,6 +27,6 @@ class SslOptionsBuilder {
   def build(): SSLOptions = {
     trustManagerFactory.init(keystore)
     sslContext.init(new Array[KeyManager](0), trustManagerFactory.getTrustManagers, new SecureRandom())
-    JdkSSLOptions.builder().withSSLContext(sslContext).build();
+    JdkSSLOptions.builder().withSSLContext(sslContext).build()
   }
 }
