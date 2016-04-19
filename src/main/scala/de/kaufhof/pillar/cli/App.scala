@@ -59,11 +59,11 @@ class App(reporter: Reporter) {
     val clusterBuilder = Cluster.builder()
       .addContactPoint(connectionConfiguration.seedAddress)
       .withPort(connectionConfiguration.port)
-    for(auth <- connectionConfiguration.auth)
-      clusterBuilder.withAuthProvider(auth)
-    for(ssl <- connectionConfiguration.sslOptions if connectionConfiguration.useSsl) {
-      clusterBuilder.withSSL(ssl)
-    }
+    connectionConfiguration.auth.foreach(clusterBuilder.withAuthProvider)
+
+    connectionConfiguration.sslConfig.foreach(_.setAsSystemProperties())
+    if (connectionConfiguration.useSsl)
+      clusterBuilder.withSSL()
 
     clusterBuilder.build()
   }

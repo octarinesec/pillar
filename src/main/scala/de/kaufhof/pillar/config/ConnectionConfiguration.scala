@@ -1,7 +1,6 @@
 package de.kaufhof.pillar.config
 
-import com.datastax.driver.core.{AuthProvider, PlainTextAuthProvider, SSLOptions}
-import com.google.common.base.Strings
+import com.datastax.driver.core.{AuthProvider, PlainTextAuthProvider}
 import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.language.implicitConversions
@@ -25,7 +24,7 @@ class ConnectionConfiguration(dataStoreName: String, environment: String, appCon
 
   val auth = Auth(connectionConfig.getOptionalConfig("auth"))
 
-  val sslOptions: Option[SSLOptions] = SslConfig(connectionConfig.getOptionalConfig("ssl-options"))
+  val sslConfig: Option[SslConfig] = SslConfig(connectionConfig.getOptionalConfig("ssl-options"))
 
 }
 
@@ -33,6 +32,14 @@ class OptionalConfig(config: Config) {
   def getOptionalConfig(path: String): Option[Config] = {
     if (config.hasPath(path)) {
       Some(config.getConfig(path))
+    } else {
+      None
+    }
+  }
+
+  def getOptionalString(path: String): Option[String] = {
+    if (config.hasPath(path)) {
+      Some(config.getString(path))
     } else {
       None
     }
@@ -55,19 +62,48 @@ object Auth {
   }
 }
 
+case class TrustStoreConfig(trustStorePath: String, trustStorePassword: String, trustStoreType: String = "JKS") {
+  def setAsSystemProperties() = {
+    System.setProperty("javax.net.ssl.trustStore", trustStorePath)
+    System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword)
+    System.setProperty("javax.net.ssl.trustStoreType", trustStoreType)
+  }
+}
+
+case class KeyStoreConfig(keyStorePath: String, keyStorePassword: String, keyStoreType: String = "JKS") {
+  def setAsSystemProperties(): Unit = {
+    System.setProperty("javax.net.ssl.keyStore", keyStorePath)
+    System.setProperty("javax.net.ssl.keyStorePassword", keyStorePassword)
+    System.setProperty("javax.net.ssl.keyStoreType", keyStoreType)
+
+  }
+}
+
+case class SslConfig(val keyStoreConfig: Option[KeyStoreConfig], val trustStoreConfig: Option[TrustStoreConfig]) {
+  def setAsSystemProperties(): Unit = {
+    keyStoreConfig.foreach(_.setAsSystemProperties())
+    trustStoreConfig.foreach(_.setAsSystemProperties())
+  }
+}
+
 object SslConfig {
-  def apply(config: Option[Config]): Option[SSLOptions] = {
+
+  import ConfigHelper._
+
+  def apply(config: Option[Config]): Option[SslConfig] = {
     config.map(config => {
-      val optionsBuilder = new SslOptionsBuilder()
-      val trustStoreFile = config.getString("trust-store-path")
-      val trustStorePassword = config.getString("trust-store-password")
-      val trustStoreType = config.getString("trust-store-type")
-      if (!Strings.isNullOrEmpty(trustStoreFile) && !Strings.isNullOrEmpty(trustStorePassword)) {
-        optionsBuilder.withKeyStore(trustStoreFile, trustStorePassword, trustStoreType)
-      }
-      optionsBuilder.withSslContext()
-      optionsBuilder.withTrustManager()
-      optionsBuilder.build()
+      val keyStoreConfig: Option[KeyStoreConfig] = for (
+        path <- config.getOptionalString("key-store-path");
+        password <- config.getOptionalString("key-store-password"))
+        yield KeyStoreConfig(path, password, config.getOptionalString("key-store-type").getOrElse("JKS"))
+
+      val trustStoreConfig: Option[TrustStoreConfig] = for (
+        path <- config.getOptionalString("trust-store-path");
+        password <- config.getOptionalString("trust-store-password"))
+        yield TrustStoreConfig(path, password, config.getOptionalString("trust-store-type").getOrElse("JKS"))
+
+      new SslConfig(keyStoreConfig, trustStoreConfig)
+
     })
   }
 }
