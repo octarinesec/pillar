@@ -22,6 +22,12 @@ class ConnectionConfigurationTest extends FunSpec with BeforeAndAfter with Match
 
   }
   describe("#initialize") {
+    it("should allow authentication to be set") {
+      val config: Config = ConfigFactory.load("authConfig.conf")
+      val configuration: ConnectionConfiguration = new ConnectionConfiguration("faker", "development",
+        config)
+      configuration.auth === Some(PlaintextAuth("cassandra", "secret"))
+    }
     it("should show defaults for useSsl") {
       val config: Config = ConfigFactory.load()
       val configuration: ConnectionConfiguration = new ConnectionConfiguration("faker", "development", config)
