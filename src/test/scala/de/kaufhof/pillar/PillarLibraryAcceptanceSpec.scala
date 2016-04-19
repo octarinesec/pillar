@@ -198,7 +198,7 @@ class PillarLibraryAcceptanceSpec extends FeatureSpec with GivenWhenThen with Be
       val thrown = intercept[InvalidQueryException] {
         session.execute(QueryBuilder.select().from(keyspaceName, "views")).all()
       }
-      thrown.getMessage should equal("unconfigured columnfamily views")
+      thrown.getMessage should startWith("unconfigured")
 
       And("the migrator removes the reversed migration from the applied migrations table")
       val reversedMigration = migrations(1)
