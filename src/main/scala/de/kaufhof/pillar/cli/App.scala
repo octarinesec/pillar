@@ -2,9 +2,10 @@ package de.kaufhof.pillar.cli
 
 import java.io.File
 
-import de.kaufhof.pillar.{ConfigurationException, PrintStreamReporter, Registry, Reporter}
 import com.datastax.driver.core.Cluster
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.ConfigFactory
+import de.kaufhof.pillar._
+import de.kaufhof.pillar.config.ConnectionConfiguration
 
 object App {
   def apply(reporter: Reporter = new PrintStreamReporter(System.out)): App = {
@@ -25,21 +26,27 @@ object App {
 }
 
 class App(reporter: Reporter) {
+  private val configuration = ConfigFactory.load()
+
   def run(arguments: Array[String]) {
     val commandLineConfiguration = CommandLineConfiguration.buildFromArguments(arguments)
     val registry = Registry.fromDirectory(new File(commandLineConfiguration.migrationsDirectory, commandLineConfiguration.dataStore))
-    val configuration = ConfigFactory.load()
+
     val dataStoreName = commandLineConfiguration.dataStore
     val environment = commandLineConfiguration.environment
-    val keyspace = getFromConfiguration(configuration, dataStoreName, environment, "cassandra-keyspace-name")
-    val seedAddress = getFromConfiguration(configuration, dataStoreName, environment, "cassandra-seed-address")
-    val port = Integer.valueOf(getFromConfiguration(configuration, dataStoreName, environment, "cassandra-port", Some(9042.toString)))
-    val builder = Cluster.builder().addContactPoint(seedAddress).withPort(port).build()
+
+    val cassandraConfiguration = new ConnectionConfiguration(dataStoreName, environment, configuration)
+
+    val cluster:Cluster = createCluster(cassandraConfiguration)
+
     val session = commandLineConfiguration.command match {
-      case Initialize => builder.connect()
-      case _ => builder.connect(keyspace)
+      case Initialize => cluster.connect()
+      case _ => cluster.connect(cassandraConfiguration.keyspace)
     }
-    val command = Command(commandLineConfiguration.command, session, keyspace, commandLineConfiguration.timeStampOption, registry)
+
+
+    val command = Command(commandLineConfiguration.command, session, cassandraConfiguration.keyspace,
+      commandLineConfiguration.timeStampOption, registry)
 
     try {
       CommandExecutor().execute(command, reporter)
@@ -48,10 +55,16 @@ class App(reporter: Reporter) {
     }
   }
 
-  private def getFromConfiguration(configuration: Config, name: String, environment: String, key: String, default: Option[String] = None): String = {
-    val path = s"pillar.$name.$environment.$key"
-    if (configuration.hasPath(path)) return configuration.getString(path)
-    if (default.eq(None)) throw new ConfigurationException(s"$path not found in application configuration")
-    default.get
+  private def createCluster(connectionConfiguration:ConnectionConfiguration): Cluster = {
+    val clusterBuilder = Cluster.builder()
+      .addContactPoint(connectionConfiguration.seedAddress)
+      .withPort(connectionConfiguration.port)
+    connectionConfiguration.auth.foreach(clusterBuilder.withAuthProvider)
+
+    connectionConfiguration.sslConfig.foreach(_.setAsSystemProperties())
+    if (connectionConfiguration.useSsl)
+      clusterBuilder.withSSL()
+
+    clusterBuilder.build()
   }
 }

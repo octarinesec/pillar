@@ -1,9 +1,13 @@
 package de.kaufhof.pillar.cli
 
+import java.io.File
+
 import org.scalatest.FunSpec
 import org.scalatest.matchers.ShouldMatchers
 
 class CommandLineConfigurationSpec extends FunSpec with ShouldMatchers {
+  val sep = File.separator
+
   describe(".buildFromArguments") {
     describe("command initialize") {
       describe("data-store faker") {
@@ -20,7 +24,9 @@ class CommandLineConfigurationSpec extends FunSpec with ShouldMatchers {
         }
 
         it("sets the migrations directory") {
-          CommandLineConfiguration.buildFromArguments(Array("initialize", "faker")).migrationsDirectory.getPath should equal("conf/pillar/migrations")
+
+          CommandLineConfiguration.buildFromArguments(Array("initialize", "faker")).migrationsDirectory
+            .getPath should equal(s"conf${sep}pillar${sep}migrations")
         }
 
         it("sets the time stamp") {
@@ -35,7 +41,9 @@ class CommandLineConfigurationSpec extends FunSpec with ShouldMatchers {
 
         describe("migrations-directory baz") {
           it("sets the migrations directory") {
-            CommandLineConfiguration.buildFromArguments(Array("-d", "src/test/resources/pillar/migrations", "initialize", "faker")).migrationsDirectory.getPath should equal("src/test/resources/pillar/migrations")
+            CommandLineConfiguration.buildFromArguments(Array("-d", "src/test/resources/pillar/migrations",
+              "initialize", "faker")).migrationsDirectory
+              .getPath should equal(s"src${sep}test${sep}resources${sep}pillar${sep}migrations")
           }
         }
 

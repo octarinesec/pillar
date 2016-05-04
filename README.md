@@ -152,6 +152,50 @@ application.conf might look like the following:
         }
     }
 
+##### SSL & Authentication
+You can add ssl options and authentication to each of the environments:
+
+    pillar.faker {
+        development {
+            cassandra-seed-address: "127.0.0.1"
+            cassandra-keyspace-name: "pillar_development"
+            auth {
+                username: cassandra
+                password: secret
+            }
+        }
+        test {
+            auth {
+                username: cassandra
+                password: secret
+            }
+            use-ssl: true
+            ssl-options: {
+                    # ssl with just a trust store for test environment
+                    trust-store-path: foobar.jks # maps to javax.net.ssl.trustStore
+                    trust-store-password: secret # maps to javax.net.ssl.trustStorePassword
+                    trust-store-type: JKS        # maps to javax.net.ssl.trustStoreType
+                }
+
+            }
+        }
+        production {
+            auth {
+                username: cassandra
+                password: secret
+            }
+            use-ssl: true
+            ssl-options {
+                trust-store-path: foobar.jks # maps to javax.net.ssl.trustStore
+                trust-store-password: secret # maps to javax.net.ssl.trustStorePassword
+                trust-store-type: JKS        # maps to javax.net.ssl.trustStoreType
+                key-store-path: keystore.jks # maps to javax.net.ssl.keyStore
+                key-store-password: secret   # maps to javax.net.ssl.keyStorePassword
+                key-store-type: JKS          # maps to javax.net.ssl.keyStoreType
+            }
+
+    }
+
 [typesafeconfig]:https://github.com/typesafehub/config
 
 Reference the acceptance spec suite for details.

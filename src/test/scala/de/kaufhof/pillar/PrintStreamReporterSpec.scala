@@ -1,11 +1,10 @@
 package de.kaufhof.pillar
 
-import com.datastax.driver.core.Session
-import org.scalatest._
-import org.scalatest.matchers.ShouldMatchers
 import java.io.{ByteArrayOutputStream, PrintStream}
 import java.util.Date
 
+import com.datastax.driver.core.Session
+import org.scalatest._
 import org.scalatest.mock.MockitoSugar
 
 class PrintStreamReporterSpec extends FunSpec with MockitoSugar with Matchers with OneInstancePerTest {
@@ -15,11 +14,12 @@ class PrintStreamReporterSpec extends FunSpec with MockitoSugar with Matchers wi
   val stream = new PrintStream(output)
   val reporter = new PrintStreamReporter(stream)
   val keyspace = "myks"
+  val nl = System.lineSeparator()
 
   describe("#initializing") {
     it("should print to the stream") {
       reporter.initializing(session, keyspace, ReplicationOptions.default)
-      output.toString should equal("Initializing myks\n")
+      output.toString should equal(s"Initializing myks${nl}")
     }
   }
 
@@ -27,7 +27,7 @@ class PrintStreamReporterSpec extends FunSpec with MockitoSugar with Matchers wi
     describe("without date restriction") {
       it("should print to the stream") {
         reporter.migrating(session, None)
-        output.toString should equal("Migrating with date restriction None\n")
+        output.toString should equal(s"Migrating with date restriction None${nl}")
       }
     }
   }
@@ -35,21 +35,21 @@ class PrintStreamReporterSpec extends FunSpec with MockitoSugar with Matchers wi
   describe("#applying") {
     it("should print to the stream") {
       reporter.applying(migration)
-      output.toString should equal("Applying 1370489972546: creates things table\n")
+      output.toString should equal(s"Applying 1370489972546: creates things table${nl}")
     }
   }
 
   describe("#reversing") {
     it("should print to the stream") {
       reporter.reversing(migration)
-      output.toString should equal("Reversing 1370489972546: creates things table\n")
+      output.toString should equal(s"Reversing 1370489972546: creates things table${nl}")
     }
   }
 
   describe("#destroying") {
     it("should print to the stream") {
       reporter.destroying(session, keyspace)
-      output.toString should equal("Destroying myks\n")
+      output.toString should equal(s"Destroying myks${nl}")
     }
   }
 }
