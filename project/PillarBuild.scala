@@ -58,7 +58,7 @@ object PillarBuild extends Build {
   lazy val root = Project(
     id = "pillar",
     base = file("."),
-    settings = Project.defaultSettings ++ sbtassembly.Plugin.assemblySettings ++ net.virtualvoid.sbt.graph.Plugin.graphSettings ++ Sonatype.sonatypeSettings
+    settings = Defaults.coreDefaultSettings ++ sbtassembly.Plugin.assemblySettings ++ net.virtualvoid.sbt.graph.Plugin.graphSettings ++ Sonatype.sonatypeSettings
   ).settings(
     assemblyMergeStrategySetting,
     assemblyTestSetting,
