@@ -93,6 +93,21 @@ object PillarBuild extends Build {
           <name>MarcoPriebe</name>
           <url>https://github.com/MarcoPriebe</url>
         </developer>
+        <developer>
+          <id>lichtsprung</id>
+          <name>Robert Giacinto</name>
+          <url>https://github.com/lichtsprung</url>
+        </developer>
+        <developer>
+          <id>adelafogoros</id>
+          <name>Adela Fogoros</name>
+          <url>https://github.com/adelafogoros</url>
+        </developer>
+        <developer>
+          <id>muellenborn</id>
+          <name>Markus Müllenborn</name>
+          <url>https://github.com/muellenborn</url>
+        </developer>
       </developers>
     )
   )
