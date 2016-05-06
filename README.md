@@ -40,15 +40,16 @@ The RPM installs Pillar to /opt/pillar.
 
 ### Packages
 
-Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.10 or pillar_2.11. The current version is 3.0.0.
+Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.10 or pillar_2.11. The current version is 3.1.0.
 
 #### sbt
 
-  libraryDependencies += "de.kaufhof" % "pillar_2.10" % "3.0.0"
+  libraryDependencies += "de.kaufhof" %% "pillar" % "3.1.0"
 
 #### Gradle
 
   compile 'de.kaufhof:pillar_2.10:3.0.0'
+  compile 'de.kaufhof:pillar_2.11:3.0.0'
 
 ## Usage
 
@@ -274,3 +275,8 @@ Reference the acceptance spec suite for details.
 ### 3.0.0
 
 * change package structure to de.kaufhof (MarcoPriebe)
+
+### 3.1.0
+
+* Allow authentication and ssl connections (convoi)
+* Small bugfixes
