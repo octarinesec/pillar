@@ -1,6 +1,7 @@
 # Pillar
 
 [![Gitter](https://badges.gitter.im/Galeria-Kaufhof/pillar.svg)](https://gitter.im/Galeria-Kaufhof/pillar?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
+[![Build Status](https://travis-ci.org/Galeria-Kaufhof/pillar.svg?branch=master)](https://travis-ci.org/Galeria-Kaufhof/pillar)
 
 Pillar manages migrations for your [Cassandra][cassandra] data stores.
 
