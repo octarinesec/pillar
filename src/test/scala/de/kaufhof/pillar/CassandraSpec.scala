@@ -11,22 +11,10 @@ import scala.concurrent.duration._
 /**
   * A mixin for repo test specs that require a Cassandra instance for testing.
   *
-  * Pillar Migration Files are required for table creation, and must be located under "conf/migrations/"
-  *
-  * When tests are run with this mixed in, it will attempt to start an embedded instance of Cassandra,
+  * When tests are run with this mixed in, it will attempt to start an embedded instance of Cassandra on a random port,
   * which will then be usable by the unit test code.
   *
-  * The following must be added to build.sbt to pull in the test resources:
-  * "com.weightwatchers.core"    %% "core-commons" % "x.x.x" % "test" classifier("tests")
-  *
-  * The following must be provided by the implementor:
-  *
-  * protocolVersion The protocol version, 3 is recommended for Cassandra 2.1.
-  * keyspaceName The name of the keyspace.
-  *
-  * The database can then be instantiated as follows:
-  * {{{object testCassandraProgramRepo extends CassandraProgramRepo with cassandraDatabase.keySpace.Connector}}}
-  *
+  * The `session` is then available for use by the implementor.
   */
 trait CassandraSpec extends ScalaFutures with BeforeAndAfterAll {
   this: Suite =>
