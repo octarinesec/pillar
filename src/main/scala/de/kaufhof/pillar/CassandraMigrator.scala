@@ -13,10 +13,18 @@ class CassandraMigrator(registry: Registry) extends Migrator {
   }
 
   override def initialize(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy) {
-    executeIdempotentCommand(session, s"CREATE KEYSPACE $keyspace WITH replication = ${replicationStrategy.cql}")
-    executeIdempotentCommand(session,
+    createKeyspace(session, keyspace, replicationStrategy)
+    createMigrationsTable(session, keyspace)
+  }
+
+  override def createKeyspace(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy = SimpleStrategy()) = {
+    session.execute(s"CREATE KEYSPACE IF NOT EXISTS $keyspace WITH replication = ${replicationStrategy.cql}")
+  }
+
+  override def createMigrationsTable(session: Session, keyspace: String) = {
+    session.execute(
       """
-        | CREATE TABLE %s.applied_migrations (
+        | CREATE TABLE IF NOT EXISTS %s.applied_migrations (
         |   authored_at timestamp,
         |   description text,
         |   applied_at timestamp,
@@ -28,14 +36,6 @@ class CassandraMigrator(registry: Registry) extends Migrator {
 
   override def destroy(session: Session, keyspace: String) {
     session.execute("DROP KEYSPACE %s".format(keyspace))
-  }
-
-  private def executeIdempotentCommand(session: Session, statement: String) {
-    try {
-      session.execute(statement)
-    } catch {
-      case _: AlreadyExistsException =>
-    }
   }
 
   private def selectMigrationsToApply(dateRestriction: Option[Date], appliedMigrations: AppliedMigrations): Seq[Migration] = {

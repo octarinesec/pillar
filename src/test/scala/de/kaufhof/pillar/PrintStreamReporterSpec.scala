@@ -17,10 +17,17 @@ class PrintStreamReporterSpec extends FunSpec with MockitoSugar with Matchers wi
   val replicationStrategy = SimpleStrategy()
   val nl = System.lineSeparator()
 
-  describe("#initializing") {
+  describe("#creatingKeyspace") {
     it("should print to the stream") {
-      reporter.initializing(session, keyspace, replicationStrategy)
-      output.toString should equal(s"Initializing myks${nl}")
+      reporter.creatingKeyspace(session, keyspace, replicationStrategy)
+      output.toString should equal(s"Creating keyspace myks${nl}")
+    }
+  }
+
+  describe("#creatingMigrationsTable") {
+    it("should print to the stream") {
+      reporter.creatingMigrationsTable(session, keyspace)
+      output.toString should equal(s"Creating migrations-table in keyspace myks${nl}")
     }
   }
 

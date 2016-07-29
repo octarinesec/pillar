@@ -6,8 +6,8 @@ import com.datastax.driver.core.Session
 
 class ReportingMigrator(reporter: Reporter, wrapped: Migrator) extends Migrator {
   override def initialize(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy) {
-    reporter.initializing(session, keyspace, replicationStrategy)
-    wrapped.initialize(session, keyspace, replicationStrategy)
+    createKeyspace(session, keyspace, replicationStrategy)
+    createMigrationsTable(session, keyspace)
   }
 
   override def migrate(session: Session, dateRestriction: Option[Date] = None) {
@@ -18,5 +18,15 @@ class ReportingMigrator(reporter: Reporter, wrapped: Migrator) extends Migrator 
   override def destroy(session: Session, keyspace: String) {
     reporter.destroying(session, keyspace)
     wrapped.destroy(session, keyspace)
+  }
+
+  override def createKeyspace(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy): Unit = {
+    reporter.creatingKeyspace(session, keyspace, replicationStrategy)
+    wrapped.createKeyspace(session, keyspace, replicationStrategy)
+  }
+
+  override def createMigrationsTable(session: Session, keyspace: String): Unit = {
+    reporter.creatingMigrationsTable(session, keyspace)
+    wrapped.createMigrationsTable(session, keyspace)
   }
 }

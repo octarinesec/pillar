@@ -19,5 +19,9 @@ trait Migrator {
 
   def initialize(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy = SimpleStrategy())
 
+  def createKeyspace(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy = SimpleStrategy())
+
+  def createMigrationsTable(session: Session, keyspace: String)
+
   def destroy(session: Session, keyspace: String)
 }
