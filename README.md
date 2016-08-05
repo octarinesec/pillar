@@ -41,11 +41,11 @@ The RPM installs Pillar to /opt/pillar.
 
 ### Packages
 
-Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.10 or pillar_2.11. The current version is 3.1.0.
+Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.10 or pillar_2.11. The current version is 3.2.0.
 
 #### sbt
 
-  libraryDependencies += "de.kaufhof" %% "pillar" % "3.1.0"
+  libraryDependencies += "de.kaufhof" %% "pillar" % "3.2.0"
 
 #### Gradle
 
@@ -312,3 +312,13 @@ Reference the acceptance spec suite for details.
 
 * Allow authentication and ssl connections (convoi)
 * Small bugfixes
+
+### 3.2.0
+
+* travis.yml file
+* travis build status in README
+* add replication strategy support [#1]:https://github.com/Galeria-Kaufhof/pillar/commit/e7429d52b21fb75a52c0756dc53abf930080a4e3
+* tweaked scaladoc for CassandraSpec
+* quorum consistency [#2]:https://github.com/Galeria-Kaufhof/pillar/commit/2a956146c6ed6d3137ba59ecb3752718c03882a9
+* add replication strategy support [#9]:https://github.com/Galeria-Kaufhof/pillar/pull/9
+* small bugfixes
