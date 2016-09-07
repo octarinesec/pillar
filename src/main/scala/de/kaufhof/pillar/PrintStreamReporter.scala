@@ -6,9 +6,6 @@ import java.util.Date
 import com.datastax.driver.core.Session
 
 class PrintStreamReporter(stream: PrintStream) extends Reporter {
-  override def initializing(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy) {
-    stream.println(s"Initializing $keyspace")
-  }
 
   override def migrating(session: Session, dateRestriction: Option[Date]) {
     stream.println(s"Migrating with date restriction $dateRestriction")
@@ -25,4 +22,13 @@ class PrintStreamReporter(stream: PrintStream) extends Reporter {
   override def destroying(session: Session, keyspace: String) {
     stream.println(s"Destroying $keyspace")
   }
+
+  override def creatingKeyspace(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy): Unit = {
+    stream.println(s"Creating keyspace $keyspace")
+  }
+
+  override def creatingMigrationsTable(session: Session, keyspace: String): Unit = {
+    stream.println(s"Creating migrations-table in keyspace $keyspace")
+  }
+
 }
