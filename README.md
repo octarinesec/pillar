@@ -41,16 +41,16 @@ The RPM installs Pillar to /opt/pillar.
 
 ### Packages
 
-Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.10 or pillar_2.11. The current version is 3.2.0.
+Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.11. 
+pillar_2.10 is no longer supported. The current version of pillar_2.11 is 3.3.0.
 
 #### sbt
 
-  libraryDependencies += "de.kaufhof" %% "pillar" % "3.2.0"
+  libraryDependencies += "de.kaufhof" %% "pillar" % "3.3.0"
 
 #### Gradle
 
-  compile 'de.kaufhof:pillar_2.10:3.0.0'
-  compile 'de.kaufhof:pillar_2.11:3.0.0'
+  compile 'de.kaufhof:pillar_2.11:3.3.0'
 
 ## Usage
 
@@ -322,3 +322,6 @@ Reference the acceptance spec suite for details.
 * quorum consistency [#2]:https://github.com/Galeria-Kaufhof/pillar/commit/2a956146c6ed6d3137ba59ecb3752718c03882a9
 * add replication strategy support [#9]:https://github.com/Galeria-Kaufhof/pillar/pull/9
 * small bugfixes
+ 
+### 3.3.0
+ * initialize-method split up into two methods (createKeyspace and createMigrationsTable). 
