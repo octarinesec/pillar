@@ -273,7 +273,11 @@ Reference the acceptance spec suite for details.
 
 ### Release Notes
 
+#### Unreleased
 
+ * Added the option to specify the name of the applied_migrations table in which the migrations are stored. This is useful
+   when using pillar in a muli-module setup where the services have their own non shared tables but live both in the same keyspace
+   and should be deployed independently from each other
 
 #### 3.3.0
 
