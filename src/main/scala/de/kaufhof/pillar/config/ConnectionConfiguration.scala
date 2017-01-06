@@ -23,6 +23,7 @@ class ConnectionConfiguration(dataStoreName: String, environment: String, appCon
   import ConfigHelper.toOptionalConfig
 
   val auth = Auth(connectionConfig.getOptionalConfig("auth"))
+  val appliedMigrationsTableName = connectionConfig.getOptionalString("applied-migrations-table-name").getOrElse("applied_migrations")
 
   val sslConfig: Option[SslConfig] = SslConfig(connectionConfig.getOptionalConfig("ssl-options"))
 

@@ -1,9 +1,9 @@
-package de.kaufhof.pillar
+package de.kaufhof.pillar.cli
 
 import java.util.Date
 
 import com.datastax.driver.core.Session
-import de.kaufhof.pillar.cli.{Command, CommandExecutor, Initialize, Migrate}
+import de.kaufhof.pillar._
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{BeforeAndAfter, FunSpec}
@@ -15,14 +15,15 @@ class CommandExecutorSpec extends FunSpec with BeforeAndAfter with MockitoSugar 
     val registry = mock[Registry]
     val reporter = mock[Reporter]
     val migrator = mock[Migrator]
+    val appliedMigrationsTableName = "applied_migrations"
     val simpleStrategy = SimpleStrategy()
     val networkTopologyStrategy = NetworkTopologyStrategyTestData.networkTopologyStrategy
-    val migratorConstructor = mock[((Registry, Reporter) => Migrator)]
-    stub(migratorConstructor.apply(registry, reporter)).toReturn(migrator)
+    val migratorConstructor = mock[((Registry, Reporter, String) => Migrator)]
+    stub(migratorConstructor.apply(registry, reporter, appliedMigrationsTableName)).toReturn(migrator)
     val executor = new CommandExecutor()(migratorConstructor)
 
     describe("an initialize action") {
-      val commandSimple = Command(Initialize, session, keyspace, None, registry, simpleStrategy)
+      val commandSimple = Command(Initialize, session, keyspace, None, registry, simpleStrategy, appliedMigrationsTableName)
 
       executor.execute(commandSimple, reporter)
 
@@ -30,7 +31,7 @@ class CommandExecutorSpec extends FunSpec with BeforeAndAfter with MockitoSugar 
         verify(migrator).initialize(session, keyspace, simpleStrategy)
       }
 
-      val commandNetwork = Command(Initialize, session, keyspace, None, registry, networkTopologyStrategy)
+      val commandNetwork = Command(Initialize, session, keyspace, None, registry, networkTopologyStrategy, appliedMigrationsTableName)
 
       executor.execute(commandNetwork, reporter)
 
@@ -40,7 +41,7 @@ class CommandExecutorSpec extends FunSpec with BeforeAndAfter with MockitoSugar 
     }
 
     describe("a migrate action without date restriction") {
-      val command = Command(Migrate, session, keyspace, None, registry, simpleStrategy)
+      val command = Command(Migrate, session, keyspace, None, registry, simpleStrategy, appliedMigrationsTableName)
 
       executor.execute(command, reporter)
 
@@ -51,7 +52,7 @@ class CommandExecutorSpec extends FunSpec with BeforeAndAfter with MockitoSugar 
 
     describe("a migrate action with date restriction") {
       val date = new Date()
-      val command = Command(Migrate, session, keyspace, Some(date.getTime), registry, simpleStrategy)
+      val command = Command(Migrate, session, keyspace, Some(date.getTime), registry, simpleStrategy, appliedMigrationsTableName)
 
       executor.execute(command, reporter)
 

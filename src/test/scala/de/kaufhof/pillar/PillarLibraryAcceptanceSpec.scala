@@ -15,6 +15,7 @@ class PillarLibraryAcceptanceSpec extends FeatureSpec
 
   val keyspaceName = "test_%d".format(System.currentTimeMillis())
   val simpleStrategy = SimpleStrategy()
+  val appliedMigrationsTableName = "applied_migrations"
 
   val migrations = Seq(
     Migration("creates events table", new Date(System.currentTimeMillis() - 5000),
@@ -55,7 +56,7 @@ class PillarLibraryAcceptanceSpec extends FeatureSpec
         """.stripMargin))
   )
   val registry = Registry(migrations)
-  val migrator = Migrator(registry)
+  val migrator = Migrator(registry, appliedMigrationsTableName)
 
   after {
     try {
@@ -78,6 +79,17 @@ class PillarLibraryAcceptanceSpec extends FeatureSpec
 
       Then("the keyspace contains a applied_migrations column family")
       assertEmptyAppliedMigrationsTable()
+    }
+
+    scenario("initialize a non-existent keyspace with a non default applied_migrations table") {
+      Given("a non-existent keyspace")
+
+      When("the migrator initializes the keyspace")
+      val migrator = Migrator(registry, "applied_migrations_non_default")
+      migrator.initialize(session, keyspaceName, simpleStrategy)
+
+      Then("the keyspace contains a applied_migrations column family")
+      assertEmptyAppliedMigrationsTable("applied_migrations_non_default")
     }
 
     scenario("initialize an existing keyspace without a applied_migrations column family") {
@@ -155,6 +167,27 @@ class PillarLibraryAcceptanceSpec extends FeatureSpec
       session.execute(QueryBuilder.select().from(keyspaceName, "applied_migrations")).all().size() should equal(4)
     }
 
+    scenario("all migrations for a non default applied migrations table name") {
+      Given("an initialized, empty, keyspace")
+      val migrator = Migrator(registry, "applied_migrations_non_default")
+      migrator.initialize(session, keyspaceName, simpleStrategy)
+
+      Given("a migration that creates an events table")
+      Given("a migration that creates a views table")
+
+      When("the migrator migrates the schema")
+      migrator.migrate(cluster.connect(keyspaceName))
+
+      Then("the keyspace contains the events table")
+      session.execute(QueryBuilder.select().from(keyspaceName, "events")).all().size() should equal(0)
+
+      And("the keyspace contains the views table")
+      session.execute(QueryBuilder.select().from(keyspaceName, "views")).all().size() should equal(0)
+
+      And("the applied_migrations table records the migrations")
+      session.execute(QueryBuilder.select().from(keyspaceName, "applied_migrations_non_default")).all().size() should equal(4)
+    }
+
     scenario("some migrations") {
       Given("an initialized, empty, keyspace")
       migrator.initialize(session, keyspaceName, simpleStrategy)
@@ -163,7 +196,7 @@ class PillarLibraryAcceptanceSpec extends FeatureSpec
       Given("a migration that creates a views table")
 
       When("the migrator migrates with a cut off date")
-      migrator.migrate(cluster.connect(keyspaceName), Some(migrations(0).authoredAt))
+      migrator.migrate(cluster.connect(keyspaceName), Some(migrations.head.authoredAt))
 
       Then("the keyspace contains the events table")
       session.execute(QueryBuilder.select().from(keyspaceName, "events")).all().size() should equal(0)
@@ -199,7 +232,7 @@ class PillarLibraryAcceptanceSpec extends FeatureSpec
       migrator.migrate(cluster.connect(keyspaceName))
 
       When("the migrator migrates with a cut off date")
-      migrator.migrate(cluster.connect(keyspaceName), Some(migrations(0).authoredAt))
+      migrator.migrate(cluster.connect(keyspaceName), Some(migrations.head.authoredAt))
 
       Then("the migrator reverses the reversible migration")
       val thrown = intercept[InvalidQueryException] {

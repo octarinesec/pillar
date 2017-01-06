@@ -4,7 +4,7 @@ import java.util.Date
 
 import com.datastax.driver.core.Session
 
-class ReportingMigrator(reporter: Reporter, wrapped: Migrator) extends Migrator {
+class ReportingMigrator(reporter: Reporter, wrapped: Migrator, appliedMigrationsTableName: String) extends Migrator {
   override def initialize(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy) {
     createKeyspace(session, keyspace, replicationStrategy)
     createMigrationsTable(session, keyspace)
@@ -26,7 +26,7 @@ class ReportingMigrator(reporter: Reporter, wrapped: Migrator) extends Migrator 
   }
 
   override def createMigrationsTable(session: Session, keyspace: String): Unit = {
-    reporter.creatingMigrationsTable(session, keyspace)
+    reporter.creatingMigrationsTable(session, keyspace, appliedMigrationsTableName)
     wrapped.createMigrationsTable(session, keyspace)
   }
 }

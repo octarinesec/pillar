@@ -8,8 +8,8 @@ trait AcceptanceAssertions extends ShouldMatchers {
   val session: Session
   val keyspaceName: String
 
-  protected def assertEmptyAppliedMigrationsTable() {
-    session.execute(QueryBuilder.select().from(keyspaceName, "applied_migrations")).all().size() should equal(0)
+  protected def assertEmptyAppliedMigrationsTable(appliedMigrationsTableName: String = "applied_migrations") {
+    session.execute(QueryBuilder.select().from(keyspaceName, appliedMigrationsTableName)).all().size() should equal(0)
   }
 
   protected def assertKeyspaceDoesNotExist() {

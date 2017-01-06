@@ -5,14 +5,14 @@ import java.util.Date
 import de.kaufhof.pillar.{Migrator, Registry, Reporter}
 
 object CommandExecutor {
-  implicit private val migratorConstructor: ((Registry, Reporter) => Migrator) = Migrator.apply
+  implicit private val migratorConstructor: ((Registry, Reporter, String) => Migrator) = Migrator.apply
 
   def apply(): CommandExecutor = new CommandExecutor()
 }
 
-class CommandExecutor(implicit val migratorConstructor: ((Registry, Reporter) => Migrator)) {
+class CommandExecutor(implicit val migratorConstructor: ((Registry, Reporter, String) => Migrator)) {
   def execute(command: Command, reporter: Reporter) {
-    val migrator = migratorConstructor(command.registry, reporter)
+    val migrator = migratorConstructor(command.registry, reporter, command.appliedMigrationsTableName)
 
     command.action match {
       case Initialize => migrator.initialize(command.session, command.keyspace, command.replicationStrategy)

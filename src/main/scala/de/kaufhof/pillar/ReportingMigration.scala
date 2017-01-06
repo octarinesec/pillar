@@ -8,13 +8,13 @@ class ReportingMigration(reporter: Reporter, wrapped: Migration) extends Migrati
   val authoredAt: Date = wrapped.authoredAt
   val up: String = wrapped.up
 
-  override def executeUpStatement(session: Session) {
+  override def executeUpStatement(session: Session, appliedMigrationsTableName: String) {
     reporter.applying(wrapped)
-    wrapped.executeUpStatement(session)
+    wrapped.executeUpStatement(session, appliedMigrationsTableName)
   }
 
-  def executeDownStatement(session: Session) {
+  def executeDownStatement(session: Session, appliedMigrationsTableName: String) {
     reporter.reversing(wrapped)
-    wrapped.executeDownStatement(session)
+    wrapped.executeDownStatement(session, appliedMigrationsTableName)
   }
 }

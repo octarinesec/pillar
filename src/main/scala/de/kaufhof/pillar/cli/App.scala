@@ -55,7 +55,9 @@ class App(reporter: Reporter, configuration: Config) {
       cassandraConfiguration.keyspace,
       commandLineConfiguration.timeStampOption,
       registry,
-      replicationOptions)
+      replicationOptions,
+      cassandraConfiguration.appliedMigrationsTableName
+    )
 
     try {
       CommandExecutor().execute(command, reporter)

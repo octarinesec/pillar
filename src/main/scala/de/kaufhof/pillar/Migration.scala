@@ -34,25 +34,25 @@ trait Migration {
     authoredAt.compareTo(date) <= 0
   }
 
-  def executeUpStatement(session: Session) {
+  def executeUpStatement(session: Session, appliedMigrationsTableName: String) {
     session.execute(up)
-    insertIntoAppliedMigrations(session)
+    insertIntoAppliedMigrations(session, appliedMigrationsTableName)
   }
 
-  def executeDownStatement(session: Session)
+  def executeDownStatement(session: Session, appliedMigrationsTableName: String)
 
-  protected def deleteFromAppliedMigrations(session: Session) {
+  protected def deleteFromAppliedMigrations(session: Session, appliedMigrationsTableName: String) {
     session.execute(QueryBuilder.
       delete().
-      from("applied_migrations").
+      from(appliedMigrationsTableName).
       where(QueryBuilder.eq("authored_at", authoredAt)).
       and(QueryBuilder.eq("description", description))
     )
   }
 
-  private def insertIntoAppliedMigrations(session: Session) {
+  private def insertIntoAppliedMigrations(session: Session, appliedMigrationsTableName: String) {
     session.execute(QueryBuilder.
-      insertInto("applied_migrations").
+      insertInto(appliedMigrationsTableName).
       value("authored_at", authoredAt).
       value("description", description).
       value("applied_at", System.currentTimeMillis())
@@ -61,20 +61,20 @@ trait Migration {
 }
 
 class IrreversibleMigration(val description: String, val authoredAt: Date, val up: String) extends Migration {
-  def executeDownStatement(session: Session) {
+  def executeDownStatement(session: Session, appliedMigrationsTableName: String) {
     throw new IrreversibleMigrationException(this)
   }
 }
 
 class ReversibleMigrationWithNoOpDown(val description: String, val authoredAt: Date, val up: String) extends Migration {
-  def executeDownStatement(session: Session) {
-    deleteFromAppliedMigrations(session)
+  def executeDownStatement(session: Session, appliedMigrationsTableName: String) {
+    deleteFromAppliedMigrations(session, appliedMigrationsTableName)
   }
 }
 
 class ReversibleMigration(val description: String, val authoredAt: Date, val up: String, val down: String) extends Migration {
-  def executeDownStatement(session: Session) {
+  def executeDownStatement(session: Session, appliedMigrationsTableName: String) {
     session.execute(down)
-    deleteFromAppliedMigrations(session)
+    deleteFromAppliedMigrations(session, appliedMigrationsTableName)
   }
 }
