@@ -42,15 +42,15 @@ The RPM installs Pillar to /opt/pillar.
 ### Packages
 
 Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.11. 
-pillar_2.10 is no longer supported. The current version of pillar_2.11 is 3.3.0.
+pillar_2.10 is no longer supported. The current version of pillar_2.11 is 4.0.0.
 
 #### sbt
 
-  libraryDependencies += "de.kaufhof" %% "pillar" % "3.3.0"
+  libraryDependencies += "de.kaufhof" %% "pillar" % "4.0.0"
 
 #### Gradle
 
-  compile 'de.kaufhof:pillar_2.11:3.3.0'
+  compile 'de.kaufhof:pillar_2.11:4.0.0'
 
 ## Usage
 
@@ -273,7 +273,7 @@ Reference the acceptance spec suite for details.
 
 ### Release Notes
 
-#### Unreleased
+#### 4.0.0
 
  * Added the option to specify the name of the applied_migrations table in which the migrations are stored. This is useful
    when using pillar in a muli-module setup where the services have their own non shared tables but live both in the same keyspace
