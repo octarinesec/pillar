@@ -3,16 +3,20 @@ package de.kaufhof.pillar
 import java.util.Date
 
 import com.datastax.driver.core.Session
-import com.datastax.driver.core.exceptions.AlreadyExistsException
 
-class CassandraMigrator(registry: Registry) extends Migrator {
+object CassandraMigrator {
+  val appliedMigrationsTableNameDefault = "applied_migrations"
+}
+
+class CassandraMigrator(registry: Registry, appliedMigrationsTableName: String) extends Migrator {
   override def migrate(session: Session, dateRestriction: Option[Date] = None) {
-    val appliedMigrations = AppliedMigrations(session, registry)
-    selectMigrationsToReverse(dateRestriction, appliedMigrations).foreach(_.executeDownStatement(session))
-    selectMigrationsToApply(dateRestriction, appliedMigrations).foreach(_.executeUpStatement(session))
+    val appliedMigrations = AppliedMigrations(session, registry, appliedMigrationsTableName)
+    selectMigrationsToReverse(dateRestriction, appliedMigrations).foreach(_.executeDownStatement(session, appliedMigrationsTableName))
+    selectMigrationsToApply(dateRestriction, appliedMigrations).foreach(_.executeUpStatement(session, appliedMigrationsTableName))
   }
 
-  override def initialize(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy) {
+  override def initialize(session: Session, keyspace: String,
+                          replicationStrategy: ReplicationStrategy = SimpleStrategy()) {
     createKeyspace(session, keyspace, replicationStrategy)
     createMigrationsTable(session, keyspace)
   }
@@ -24,13 +28,13 @@ class CassandraMigrator(registry: Registry) extends Migrator {
   override def createMigrationsTable(session: Session, keyspace: String) = {
     session.execute(
       """
-        | CREATE TABLE IF NOT EXISTS %s.applied_migrations (
+        | CREATE TABLE IF NOT EXISTS %s.%s (
         |   authored_at timestamp,
         |   description text,
         |   applied_at timestamp,
         |   PRIMARY KEY (authored_at, description)
         |  )
-      """.stripMargin.format(keyspace)
+      """.stripMargin.format(keyspace, appliedMigrationsTableName)
     )
   }
 

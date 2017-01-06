@@ -8,7 +8,8 @@ import org.scalatest.mock.MockitoSugar
 class ReportingMigratorSpec extends FunSpec with MockitoSugar {
   val reporter = mock[Reporter]
   val wrapped = mock[Migrator]
-  val migrator = new ReportingMigrator(reporter, wrapped)
+  val appliedMigrationsTableName = "applied_migrations"
+  val migrator = new ReportingMigrator(reporter, wrapped, appliedMigrationsTableName)
   val session = mock[Session]
   val keyspace = "myks"
 

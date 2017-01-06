@@ -27,8 +27,8 @@ class PrintStreamReporter(stream: PrintStream) extends Reporter {
     stream.println(s"Creating keyspace $keyspace")
   }
 
-  override def creatingMigrationsTable(session: Session, keyspace: String): Unit = {
-    stream.println(s"Creating migrations-table in keyspace $keyspace")
+  override def creatingMigrationsTable(session: Session, keyspace: String, appliedMigrationsTableName: String): Unit = {
+    stream.println(s"Creating migrations-table [$appliedMigrationsTableName] in keyspace $keyspace")
   }
 
 }

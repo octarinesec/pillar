@@ -273,9 +273,52 @@ Reference the acceptance spec suite for details.
 
 ### Release Notes
 
-#### 1.0.1
+#### Unreleased
 
-* Add a "destroy" method to drop a keyspace (iamsteveholmes)
+ * Added the option to specify the name of the applied_migrations table in which the migrations are stored. This is useful
+   when using pillar in a muli-module setup where the services have their own non shared tables but live both in the same keyspace
+   and should be deployed independently from each other
+
+#### 3.3.0
+
+ * initialize-method split up into two methods (createKeyspace and createMigrationsTable). 
+
+#### 3.2.0
+
+* travis.yml file
+* travis build status in README
+* add replication strategy support [#1]:https://github.com/Galeria-Kaufhof/pillar/commit/e7429d52b21fb75a52c0756dc53abf930080a4e3
+* tweaked scaladoc for CassandraSpec
+* quorum consistency [#2]:https://github.com/Galeria-Kaufhof/pillar/commit/2a956146c6ed6d3137ba59ecb3752718c03882a9
+* add replication strategy support [#9]:https://github.com/Galeria-Kaufhof/pillar/pull/9
+* small bugfixes
+
+#### 3.1.0
+
+* Allow authentication and ssl connections (convoi)
+* Small bugfixes
+
+#### 3.0.0
+
+* change package structure to de.kaufhof (MarcoPriebe)
+
+#### 2.1.1
+
+* Update to sbt-sonatype dependency to version 1.1 (MarcoPriebe)
+* Update to Scala to version 2.11.6 (MarcoPriebe)
+
+#### 2.1.0
+
+* Update to Cassandra dependency to version 3.0.0 (MarcoPriebe)
+
+#### 2.0.1
+
+* Update a argot dependency to version 1.0.3 (magro)
+
+#### 2.0.0
+
+* Allow configuration of Cassandra port (fkoehler)
+* Rework Migrator interface to allow passing a Session object when integrating Pillar as a library (magro, comeara)
 
 #### 1.0.3
 
@@ -286,42 +329,7 @@ Reference the acceptance spec suite for details.
 * Shutdown cluster in migrate & initialize (magro)
 * Transition support from StreamSend to Chris O'Meara (comeara)
 
-#### 2.0.0
+#### 1.0.1
 
-* Allow configuration of Cassandra port (fkoehler)
-* Rework Migrator interface to allow passing a Session object when integrating Pillar as a library (magro, comeara)
+* Add a "destroy" method to drop a keyspace (iamsteveholmes)
 
-#### 2.0.1
-
-* Update a argot dependency to version 1.0.3 (magro)
-
-### 2.1.0
-
-* Update to Cassandra dependency to version 3.0.0 (MarcoPriebe)
-
-### 2.1.1
-
-* Update to sbt-sonatype dependency to version 1.1 (MarcoPriebe)
-* Update to Scala to version 2.11.6 (MarcoPriebe)
-
-### 3.0.0
-
-* change package structure to de.kaufhof (MarcoPriebe)
-
-### 3.1.0
-
-* Allow authentication and ssl connections (convoi)
-* Small bugfixes
-
-### 3.2.0
-
-* travis.yml file
-* travis build status in README
-* add replication strategy support [#1]:https://github.com/Galeria-Kaufhof/pillar/commit/e7429d52b21fb75a52c0756dc53abf930080a4e3
-* tweaked scaladoc for CassandraSpec
-* quorum consistency [#2]:https://github.com/Galeria-Kaufhof/pillar/commit/2a956146c6ed6d3137ba59ecb3752718c03882a9
-* add replication strategy support [#9]:https://github.com/Galeria-Kaufhof/pillar/pull/9
-* small bugfixes
- 
-### 3.3.0
- * initialize-method split up into two methods (createKeyspace and createMigrationsTable). 

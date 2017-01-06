@@ -10,5 +10,5 @@ trait Reporter {
   def reversing(migration: Migration)
   def destroying(session: Session, keyspace: String)
   def creatingKeyspace(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy)
-  def creatingMigrationsTable(session: Session, keyspace: String)
+  def creatingMigrationsTable(session: Session, keyspace: String, appliedMigrationsTableName: String)
 }
