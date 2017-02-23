@@ -37,8 +37,8 @@ class ParserSpec extends FunSpec with BeforeAndAfter with ShouldMatchers {
       }
     }
 
-    describe("1370028265_creates_events_table_with_stages.cql") {
-      val migrationPath = "src/test/resources/pillar/migrations/faker/1370028265_creates_events_table_with_stages.cql"
+    describe("1469630066000_creates_users_groups_table.cql") {
+      val migrationPath = "src/test/resources/pillar/migrations/faker/1469630066000_creates_users_groups_table.cql"
 
       it("returns a migration object") {
         val resource = new FileInputStream(migrationPath)
@@ -47,41 +47,41 @@ class ParserSpec extends FunSpec with BeforeAndAfter with ShouldMatchers {
 
       it("assigns authoredAt") {
         val resource = new FileInputStream(migrationPath)
-        Parser().parse(resource).authoredAt should equal(new Date(1370023265))
+        Parser().parse(resource).authoredAt should equal(new Date(1469630066000L))
       }
 
       it("assigns description") {
         val resource = new FileInputStream(migrationPath)
-        Parser().parse(resource).description should equal("creates events table with stages")
+        Parser().parse(resource).description should equal("creates users and groups tables")
       }
 
       it("assigns two up stages") {
         val resource = new FileInputStream(migrationPath)
         val migration = Parser().parse(resource)
 
-        migration.up should contain( """CREATE TABLE events (
-                                        |  batch_id text,
-                                        |  occurred_at uuid,
-                                        |  event_type text,
-                                        |  payload blob,
-                                        |  PRIMARY KEY (batch_id, occurred_at, event_type)
-                                        |)""".stripMargin)
+        migration.up should contain(
+          """CREATE TABLE groups (
+            |  id uuid,
+            |  name text,
+            |  PRIMARY KEY (id)
+            |)""".stripMargin)
 
-        migration.up should contain( """CREATE TABLE events (
-                                        |  batch_id text,
-                                        |  occurred_at uuid,
-                                        |  event_type text,
-                                        |  payload blob,
-                                        |  PRIMARY KEY (batch_id, occurred_at, event_type)
-                                        |)""".stripMargin)
+        migration.up should contain(
+          """CREATE TABLE users (
+            |  id uuid,
+            |  group_id uuid,
+            |  username text,
+            |  password text,
+            |  PRIMARY KEY (id)
+            |)""".stripMargin)
       }
 
       it("assigns two down stages") {
         val resource = new FileInputStream(migrationPath)
         val migration = Parser().parse(resource).asInstanceOf[ReversibleMigration]
 
-        migration.down should contain( """DROP TABLE events""".stripMargin)
-        migration.down should contain( """DROP TABLE events2""".stripMargin)
+        migration.down should contain("""DROP TABLE users""".stripMargin)
+        migration.down should contain("""DROP TABLE groups""".stripMargin)
       }
     }
 
