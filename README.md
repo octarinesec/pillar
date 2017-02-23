@@ -150,6 +150,38 @@ Reversible migrations with no-op down statements have an up property and an empt
 
     -- down:
 
+Each migration may optionally specify multiple stages. Stages are executed in the order specified.
+
+    -- description: creates users and groups tables
+    -- authoredAt: 1469630066000
+    -- up:
+
+    -- stage: 1
+    CREATE TABLE groups (
+      id uuid,
+      name text,
+      PRIMARY KEY (id)
+    )
+
+    -- stage: 2
+    CREATE TABLE users (
+      id uuid,
+      group_id uuid,
+      username text,
+      password text,
+      PRIMARY KEY (id)
+    )
+
+
+    -- down:
+
+    -- stage: 1
+    DROP TABLE users
+
+    -- stage: 2
+    DROP TABLE groups
+    
+   
 The Pillar command line interface expects to find migrations in conf/pillar/migrations unless overriden by the
 -d command-line option.
 
