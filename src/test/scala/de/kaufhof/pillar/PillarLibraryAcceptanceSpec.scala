@@ -19,7 +19,7 @@ class PillarLibraryAcceptanceSpec extends FeatureSpec
 
   val migrations = Seq(
     Migration("creates events table", new Date(System.currentTimeMillis() - 5000),
-      """
+      Seq("""
         |CREATE TABLE events (
         |  batch_id text,
         |  occurred_at uuid,
@@ -27,33 +27,31 @@ class PillarLibraryAcceptanceSpec extends FeatureSpec
         |  payload blob,
         |  PRIMARY KEY (batch_id, occurred_at, event_type)
         |)
-      """.stripMargin),
+      """.stripMargin)),
     Migration("creates views table", new Date(System.currentTimeMillis() - 3000),
-      """
+      Seq("""
         |CREATE TABLE views (
         |  id uuid PRIMARY KEY,
         |  url text,
         |  person_id int,
         |  viewed_at timestamp
         |)
-      """.stripMargin,
-      Some(
-        """
+      """.stripMargin),
+      Some( Seq("""
           |DROP TABLE views
-        """.stripMargin)),
+        """.stripMargin))),
     Migration("adds user_agent to views table", new Date(System.currentTimeMillis() - 1000),
-      """
+      Seq("""
         |ALTER TABLE views
         |ADD user_agent text
-      """.stripMargin, None), // Dropping a column is coming in Cassandra 2.0
+          """.stripMargin), None), // Dropping a column is coming in Cassandra 2.0
     Migration("adds index on views.user_agent", new Date(),
-      """
+      Seq("""
         |CREATE INDEX views_user_agent ON views(user_agent)
-      """.stripMargin,
-      Some(
-        """
+      """.stripMargin),
+      Some( Seq("""
           |DROP INDEX views_user_agent
-        """.stripMargin))
+        """.stripMargin)))
   )
   val registry = Registry(migrations)
   val migrator = Migrator(registry, appliedMigrationsTableName)
