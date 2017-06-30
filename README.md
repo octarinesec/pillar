@@ -189,7 +189,7 @@ The Pillar command line interface expects to find migrations in conf/pillar/migr
 
 Pillar uses the [Typesafe Config][typesafeconfig] library for configuration. The Pillar command-line interface expects
 to find an application.conf file in ./conf or ./src/main/resources.
-The ReplicationStrategy and ReplicationFactor can be configured per environment. If left out completely,
+The ReplicationStrategy and ReplicationFactor can be configured via environment. If left out completely,
 SimplyStrategy with RF 3 will be used by default.
 Given a data store called faker, the application.conf might look like the following:
 
