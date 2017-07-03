@@ -19,7 +19,7 @@ class CommandExecutorSpec extends FunSpec with BeforeAndAfter with MockitoSugar 
     val simpleStrategy = SimpleStrategy()
     val networkTopologyStrategy = NetworkTopologyStrategyTestData.networkTopologyStrategy
     val migratorConstructor = mock[((Registry, Reporter, String) => Migrator)]
-    stub(migratorConstructor.apply(registry, reporter, appliedMigrationsTableName)).toReturn(migrator)
+    when(migratorConstructor.apply(registry, reporter, appliedMigrationsTableName)).thenReturn(migrator)
     val executor = new CommandExecutor()(migratorConstructor)
 
     describe("an initialize action") {

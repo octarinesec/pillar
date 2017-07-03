@@ -27,21 +27,21 @@ databases with one key difference: Pillar is completely independent from any app
 ### From Source
 
 This method requires [Simple Build Tool (sbt)][sbt].
-Building an RPM also requires [Effing Package Management (fpm)][fpm].
+Building an RPM can be done via sbt-native-packager.
 
-    % sbt assembly   # builds just the jar file in the target/ directory
+    % sbt assembly   # builds just the jar file in the target directory
 
-    % sbt rh-package # builds the jar and the RPM in the target/ directory
-    % sudo rpm -i target/pillar-1.0.0-DEV.noarch.rpm
+    % sbt rpm:packageBin # builds the RPM in the target directory
+    % sudo rpm -i target/pillar-<version>.noarch.rpm
 
 The RPM installs Pillar to /opt/pillar.
 
 [sbt]:http://www.scala-sbt.org
-[fpm]:https://github.com/jordansissel/fpm
+[sbt-native-packager]:http://sbt-native-packager.readthedocs.io/en/latest/
 
 ### Packages
 
-Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.11. 
+Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.11 or pillar_2.12.
 pillar_2.10 is no longer supported. The current version of pillar_2.11 is 4.0.0.
 
 #### sbt
