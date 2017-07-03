@@ -42,15 +42,15 @@ The RPM installs Pillar to /opt/pillar.
 ### Packages
 
 Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.11 or pillar_2.12.
-pillar_2.10 is no longer supported. The current version of pillar_2.11 is 4.0.0.
+pillar_2.10 is no longer supported. The current version of pillar_2.11/pillar_2.12 is 4.1.0.
 
 #### sbt
 
-  libraryDependencies += "de.kaufhof" %% "pillar" % "4.0.0"
+  libraryDependencies += "de.kaufhof" %% "pillar" % "4.1.0"
 
 #### Gradle
 
-  compile 'de.kaufhof:pillar_2.11:4.0.0'
+  compile 'de.kaufhof:pillar_2.11:4.1.0'
 
 ## Usage
 
@@ -304,6 +304,10 @@ You can also integrate Pillar directly into your application as a library.
 Reference the acceptance spec suite for details.
 
 ### Release Notes
+
+#### 4.1.0
+* Cross-compile for scala 2.11 and 2.12
+* Replace fpm with native-packager
 
 #### 4.0.0
 
