@@ -31,11 +31,14 @@ val rpmSettings = {
   Seq(
     rpmVendor := "kaufhof",
     rpmUrl := Some("https://github.com/Galeria-Kaufhof/pillar"),
+    rpmGroup := Some("Development/Others"),
     linuxPackageMappings in Rpm := linuxPackageMappings.value,
     packageName in Rpm := "de.kaufhof",
+    packageDescription in Rpm := """Pillar manages migrations for your Cassandra data stores.""",
     version in Rpm := version.value,
     rpmRelease in Rpm := "1",
-    packageSummary in Rpm := "Pillar manages migrations for your Cassandra data stores."
+    packageSummary in Rpm := "Pillar manages migrations for your Cassandra data stores.",
+    rpmLicense := Some("http://www.opensource.org/licenses/mit-license.php")
   )
 }
 
