@@ -1,5 +1,5 @@
-import sbt._
 import Keys._
+import sbt._
 import xerial.sbt.Sonatype
 
 fork in Test := true
@@ -17,6 +17,39 @@ assemblyMergeStrategy in assembly := {
     oldStrategy(x)
 }
 
+val rhPackage = taskKey[File]("Packages the application for Red Hat Package Manager")
+rhPackage := {
+  val rootPath = new File(target.value, "staged-package")
+    val subdirectories = Map(
+      "bin" -> new File(rootPath, "bin"),
+      "conf" -> new File(rootPath, "conf"),
+      "lib" -> new File(rootPath, "lib")
+    )
+    subdirectories.foreach {
+      case (_, subdirectory) => IO.createDirectory(subdirectory)
+    }
+    IO.copyFile(assembly.value, new File(subdirectories("lib"), "pillar.jar"))
+    val bashDirectory = new File(sourceDirectory.value, "main/bash")
+    bashDirectory.list.foreach {
+      script =>
+        val destination = new File(subdirectories("bin"), script)
+        IO.copyFile(new File(bashDirectory, script), destination)
+        destination.setExecutable(true, false)
+    }
+    val resourcesDirectory = new File(sourceDirectory.value, "main/resources")
+    resourcesDirectory.list.foreach {
+      resource =>
+        IO.copyFile(new File(resourcesDirectory, resource), new File(subdirectories("conf"), resource))
+    }
+    val iterationId = try { sys.env("GO_PIPELINE_COUNTER") } catch { case e: NoSuchElementException => "DEV" }
+    "fpm -f -s dir -t rpm --package %s -n pillar --version %s --iteration %s -a all --prefix /opt/pillar -C %s/staged-package/ .".format(target.value.getPath, version.value, iterationId, target.value.getPath).!
+
+    val pkg = file("%s/pillar-%s-%s.noarch.rpm".format(target.value.getPath, version.value, iterationId))
+    if(!pkg.exists()) throw new RuntimeException("Packaging failed. Check logs for fpm output.")
+    pkg
+}
+
+
 val dependencies = Seq(
   "com.datastax.cassandra" % "cassandra-driver-core" % "3.1.4",
   "org.cassandraunit" % "cassandra-unit" % "3.1.3.2" % "test",
@@ -26,21 +59,6 @@ val dependencies = Seq(
   "com.google.guava" % "guava" % "18.0" % "test",
   "ch.qos.logback" % "logback-classic" % "1.2.3" % "test"
 )
-
-val rpmSettings = {
-  Seq(
-    rpmVendor := "kaufhof",
-    rpmUrl := Some("https://github.com/Galeria-Kaufhof/pillar"),
-    rpmGroup := Some("Development/Others"),
-    linuxPackageMappings in Rpm := linuxPackageMappings.value,
-    packageName in Rpm := "de.kaufhof",
-    packageDescription in Rpm := """Pillar manages migrations for your Cassandra data stores.""",
-    version in Rpm := version.value,
-    rpmRelease in Rpm := "1",
-    packageSummary in Rpm := "Pillar manages migrations for your Cassandra data stores.",
-    rpmLicense := Some("http://www.opensource.org/licenses/mit-license.php")
-  )
-}
 
 lazy val root = Project(
   id = "pillar",
@@ -101,5 +119,3 @@ lazy val root = Project(
         </developers>
     )
   )
-  .settings(rpmSettings)
-  .enablePlugins(RpmPlugin)
