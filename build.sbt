@@ -74,7 +74,7 @@ lazy val root = Project(
     licenses := Seq("MIT license" -> url(
       "http://www.opensource.org/licenses/mit-license.php")),
     scalaVersion := "2.12.2",
-    crossScalaVersions := Seq("2.12.2", "2.11.11")
+    crossScalaVersions := Seq("2.12.2", "2.11.11", "2.10.6")
   )
   .settings(
     publishTo := {
