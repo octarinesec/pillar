@@ -69,7 +69,7 @@ lazy val root = Project(
     libraryDependencies ++= dependencies,
     name := "pillar",
     organization := "de.kaufhof",
-    version := "4.1.0",
+    version := "4.1.1",
     homepage := Some(url("https://github.com/Galeria-Kaufhof/pillar")),
     licenses := Seq("MIT license" -> url(
       "http://www.opensource.org/licenses/mit-license.php")),
