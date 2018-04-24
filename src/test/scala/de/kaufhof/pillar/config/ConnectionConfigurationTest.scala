@@ -95,5 +95,17 @@ class ConnectionConfigurationTest extends FunSpec with BeforeAndAfter with Match
       configuration.sslConfig === None
     }
 
+    it("should allow a single cassandra seed address to be read") {
+      val config: Config = ConfigFactory.load("authConfig.conf")
+      val configuration: ConnectionConfiguration = new ConnectionConfiguration("faker", "test", config)
+      configuration.seedAddress should equal(List("127.0.0.1"))
+    }
+
+    it("should allow multiple cassandra seed addresses to be read") {
+      val config: Config = ConfigFactory.load("authConfig.conf")
+      val configuration: ConnectionConfiguration = new ConnectionConfiguration("faker", "multiple_seed_addresses_test",
+        config)
+      configuration.seedAddress should equal(List("127.0.0.1", "127.0.0.2", "127.0.0.3"))
+    }
   }
 }

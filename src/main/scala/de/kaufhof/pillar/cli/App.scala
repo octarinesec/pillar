@@ -71,7 +71,7 @@ class App(reporter: Reporter, configuration: Config) {
     queryOptions.setConsistencyLevel(ConsistencyLevel.QUORUM)
 
     val clusterBuilder = Cluster.builder()
-      .addContactPoint(connectionConfiguration.seedAddress)
+      .addContactPoints(connectionConfiguration.seedAddress:_*)
       .withPort(connectionConfiguration.port)
       .withQueryOptions(queryOptions)
     connectionConfiguration.auth.foreach(clusterBuilder.withAuthProvider)

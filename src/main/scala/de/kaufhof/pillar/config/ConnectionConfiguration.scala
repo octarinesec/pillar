@@ -1,9 +1,10 @@
 package de.kaufhof.pillar.config
 
 import com.datastax.driver.core.{AuthProvider, PlainTextAuthProvider}
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.{Config, ConfigFactory, ConfigValueType}
 
 import scala.language.implicitConversions
+import scala.collection.JavaConverters._
 
 /**
   * Configuration for connection to cassandra.
@@ -15,7 +16,8 @@ class ConnectionConfiguration(dataStoreName: String, environment: String, appCon
     .withFallback(ConfigFactory.load("cassandraConnectionReference.conf"))
 
   val keyspace = connectionConfig.getString("cassandra-keyspace-name")
-  val seedAddress = connectionConfig.getString("cassandra-seed-address")
+  val seedAddress = ConfigHelper.readAsStringArray(connectionConfig, "cassandra-seed-address")
+
   val port = connectionConfig.getInt("cassandra-port")
 
   val useSsl = connectionConfig.getBoolean("use-ssl")
@@ -50,6 +52,16 @@ class OptionalConfig(config: Config) {
 object ConfigHelper {
   implicit def toOptionalConfig(config: Config): OptionalConfig = {
     new OptionalConfig(config)
+  }
+
+  // Maintain backward compatibility with specification of a single String value instead of an array
+  def readAsStringArray(config: Config, path: String) : List[String] = {
+    val value = config.getValue(path)
+    if (value.valueType() == ConfigValueType.LIST) {
+      value.unwrapped().asInstanceOf[java.util.List[Object]].asScala.toList.map(a => a.asInstanceOf[String])
+    } else {
+      List(value.unwrapped().asInstanceOf[String])
+    }
   }
 }
 
