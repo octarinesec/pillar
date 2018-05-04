@@ -41,7 +41,7 @@ The RPM installs Pillar to /opt/pillar.
 
 ### Packages
 
-Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.10, pillar_2.11 or pillar_2.12. The current version of pillar is 4.1.0.
+Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.10, pillar_2.11 or pillar_2.12. The current version of pillar is 4.1.2.
 
 #### sbt
 
