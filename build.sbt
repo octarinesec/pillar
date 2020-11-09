@@ -51,7 +51,12 @@ rhPackage := {
 
 
 val dependencies = Seq(
-  "com.datastax.cassandra" % "cassandra-driver-core" % "3.1.4",
+  "com.datastax.cassandra" % "cassandra-driver-core" % "3.2.0" excludeAll(
+    ExclusionRule(organization = "io.netty"),
+    ExclusionRule("com.google.guava", "guava")
+  ),
+  "io.netty" % "netty-handler" % "4.1.46.Final",
+  "com.google.guava" % "guava" % "23.1-jre",
   "org.cassandraunit" % "cassandra-unit" % "3.1.3.2" % "test",
   "com.typesafe" % "config" % "1.3.1",
   "org.mockito" % "mockito-core" % "2.8.47" % "test",
@@ -69,12 +74,12 @@ lazy val root = Project(
     libraryDependencies ++= dependencies,
     name := "pillar",
     organization := "de.kaufhof",
-    version := "4.1.2",
+    version := "4.1.3",
     homepage := Some(url("https://github.com/Galeria-Kaufhof/pillar")),
     licenses := Seq("MIT license" -> url(
       "http://www.opensource.org/licenses/mit-license.php")),
-    scalaVersion := "2.12.2",
-    crossScalaVersions := Seq("2.12.2", "2.11.11", "2.10.6")
+    scalaVersion := "2.12.4",
+    crossScalaVersions := Seq("2.12.4", "2.12.2", "2.11.11", "2.10.6")
   )
   .settings(
     publishTo := {
